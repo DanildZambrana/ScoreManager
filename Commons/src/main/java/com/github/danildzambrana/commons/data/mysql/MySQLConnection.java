@@ -1,19 +1,18 @@
 package com.github.danildzambrana.commons.data.mysql;
 
 import com.github.danildzambrana.commons.data.IConnection;
+import com.github.danildzambrana.commons.utils.FieldUtils;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.boot.registry.StandardServiceRegistry;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
-import org.hibernate.boot.registry.classloading.internal.ClassLoaderServiceImpl;
-import org.hibernate.boot.registry.classloading.spi.ClassLoaderService;
-import org.hibernate.boot.registry.internal.BootstrapServiceRegistryImpl;
 import org.hibernate.cfg.Configuration;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import javax.imageio.spi.ServiceRegistry;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 
 
 /**
@@ -21,7 +20,7 @@ import java.util.*;
  */
 public class MySQLConnection implements IConnection<Session> {
     private final String         URL;
-    private       SessionFactory sessionFactory;
+    private final SessionFactory sessionFactory;
 
     /**
      * Use {@link MySQLConnectionBuilder} instead.
@@ -34,6 +33,8 @@ public class MySQLConnection implements IConnection<Session> {
 
     private MySQLConnection(MySQLConnectionBuilder builder) {
         Configuration configuration = new Configuration();
+
+        FieldUtils.requireArgument(!builder.getDriver().isEmpty());
         configuration.setProperty("hibernate.connector.driver_class", builder.getDriver());
 
         URL = buildURL(builder.getHost(), builder.getPort(), builder.getDataBaseName(), builder.getUrlProperties());
@@ -41,6 +42,8 @@ public class MySQLConnection implements IConnection<Session> {
 
         configuration.setProperty("hibernate.connection.username", builder.getUser());
         configuration.setProperty("hibernate.connection.password", builder.getPassword());
+
+        FieldUtils.requireArgument(!builder.getDialect().isEmpty());
         configuration.setProperty("hibernate.dialect", builder.getDialect());
         configuration.setProperty("show_sql", builder.isDebug() + "");
         configuration.setProperty("hibernate.hbm2ddl.auto", builder.getHbm2ddl());
@@ -75,8 +78,11 @@ public class MySQLConnection implements IConnection<Session> {
 
     private String buildURL(String host, int port, String dataBaseName, Map<String, String> properties) {
         StringBuilder url = new StringBuilder("jdbc:mysql://");
+        FieldUtils.requireArgument(!host.isEmpty());
         url.append(host);
-        if (port > 0 && port != 3306) {
+
+        FieldUtils.requireArgument(port > 0);
+        if (port != 3306) {
             url.append(":").append(port);
         }
 
@@ -136,9 +142,8 @@ public class MySQLConnection implements IConnection<Session> {
             return this;
         }
 
-        //Pool
-        private boolean             pool           = false;
-        private Map<String, String> poolProperties = new HashMap<>();
+        private final Map<String, String> poolProperties = new HashMap<>();
+        private final Map<String, String> urlProperties  = new HashMap<>();
 
         public Map<String, String> getPoolProperties() {
             return poolProperties;
@@ -149,9 +154,9 @@ public class MySQLConnection implements IConnection<Session> {
             return this;
         }
 
-        private Map<String, String> urlProperties = new HashMap<>();
-
-        private Map<String, String> hibernateProperties = new HashMap<>();
+        private final Map<String, String> hibernateProperties = new HashMap<>();
+        //Pool
+        private       boolean             pool                = false;
 
         public Map<String, String> getHibernateProperties() {
             return hibernateProperties;
