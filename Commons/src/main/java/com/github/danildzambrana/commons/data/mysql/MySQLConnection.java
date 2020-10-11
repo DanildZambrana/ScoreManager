@@ -45,11 +45,14 @@ public class MySQLConnection implements IConnection<Session> {
         configuration.setProperty("show_sql", builder.isDebug() + "");
         configuration.setProperty("hibernate.hbm2ddl.auto", builder.getHbm2ddl());
 
+        builder.getHibernateProperties().forEach(configuration::setProperty);
+
 
         for (Class<?> mappedClazz : builder.mappedClazz) {
             configuration.addAnnotatedClass(mappedClazz);
         }
 
+        //TODO Improve this code.
         if (builder.isPool()) {
             builder.poolProperties.forEach(configuration::setProperty);
         }
@@ -148,6 +151,17 @@ public class MySQLConnection implements IConnection<Session> {
 
         private Map<String, String> urlProperties = new HashMap<>();
 
+        private Map<String, String> hibernateProperties = new HashMap<>();
+
+        public Map<String, String> getHibernateProperties() {
+            return hibernateProperties;
+        }
+
+        public MySQLConnectionBuilder addHibernateProperty(String property, String value) {
+            this.hibernateProperties.put(property, value);
+            return this;
+        }
+
         private MySQLConnectionBuilder() {
         }
 
@@ -237,7 +251,7 @@ public class MySQLConnection implements IConnection<Session> {
             return urlProperties;
         }
 
-        public MySQLConnectionBuilder addProperty(String property, String value) {
+        public MySQLConnectionBuilder addURLProperty(String property, String value) {
             this.urlProperties.put(property, value);
             return this;
         }

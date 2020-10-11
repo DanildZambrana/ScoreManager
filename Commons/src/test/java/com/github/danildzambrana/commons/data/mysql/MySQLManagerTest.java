@@ -2,8 +2,6 @@ package com.github.danildzambrana.commons.data.mysql;
 
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 class MySQLManagerTest {
     private MySQLManager<Long, TestEntity> manager;
     private boolean execute = true;
@@ -16,8 +14,8 @@ class MySQLManagerTest {
                         .setPassword("")
                         .setDataBaseName("curso_spring")
                         .setHost("db4free.net")
-                        .addProperty("serverTimezone", "UTC")
-                        .addProperty("useSSL", "false")
+                        .addURLProperty("serverTimezone", "UTC")
+                        .addURLProperty("useSSL", "false")
                         /*.setPool(true)
                         .addPoolProperty("connection.provider_class", "org.hibernate.connection.C3P0ConnectionProvider")
                         .addPoolProperty("hibernate.c3p0.min_size", "5")
