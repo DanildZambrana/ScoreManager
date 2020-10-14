@@ -76,4 +76,9 @@ public class MySQLManager<I extends Serializable, T extends Serializable> implem
 
         return true;
     }
+
+    @Override
+    public IConnection<Session> getConnection() {
+        return connection;
+    }
 }

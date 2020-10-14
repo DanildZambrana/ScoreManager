@@ -29,8 +29,11 @@ public interface IDataManager<I, T> {
 
     /**
      * Remove the value.
+     *
      * @param t value to remove.
      * @return true if the value was removed, otherwise return false.
      */
     boolean delete(@NotNull T t);
+
+    IConnection<?> getConnection();
 }
