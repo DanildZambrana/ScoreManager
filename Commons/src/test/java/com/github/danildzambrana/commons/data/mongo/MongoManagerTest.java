@@ -32,14 +32,14 @@ class MongoManagerTest {
 
     @Test
     void save() {
-        assert execute;
+        assert (execute);
 
         manager.save(test);
     }
 
     @Test
     void get() {
-        assert execute;
+        assert (execute);
 
         Optional<TestEntity> testEntity = manager.get(1L, TestEntity.class);
 
@@ -48,7 +48,7 @@ class MongoManagerTest {
 
     @Test
     void delete() {
-        assert execute;
+        assert (execute);
         Optional<TestEntity> testEntity = manager.get(1L, TestEntity.class);
 
         testEntity.ifPresent(o -> {

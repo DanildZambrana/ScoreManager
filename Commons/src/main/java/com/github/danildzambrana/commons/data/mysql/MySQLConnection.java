@@ -119,48 +119,23 @@ public class MySQLConnection implements IConnection<Session> {
      * Builder adapter to {@link MySQLConnection}
      */
     public static class Builder {
-        private String     user;
-        private String     password;
-        private String     host;
-        private int        port    = 3306;
-        private String     dataBaseName;
-        private String     driver  = "com.mysql.jdbc.Driver";
-        private String     dialect = "org.hibernate.dialect.MySQL8Dialect";
-        private boolean    debug   = false;
-        private Class<?>[] mappedClazz;
-        private String     hbm2ddl = "update";
-
-        public String getHbm2ddl() {
-            return hbm2ddl;
-        }
-
-        private final Map<String, String> poolProperties = new HashMap<>();
-        private final Map<String, String> urlProperties  = new HashMap<>();
-        private       boolean             pool           = false;
+        private       String              user;
+        private       String              password;
+        private       String              host;
+        private       int                 port                = 3306;
+        private       String              dataBaseName;
+        private       String              driver              = "com.mysql.jdbc.Driver";
+        private       String              dialect             = "org.hibernate.dialect.MySQL8Dialect";
+        private       boolean             debug               = false;
+        private       Class<?>[]          mappedClazz;
+        private       String              hbm2ddl             = "update";
+        private final Map<String, String> urlProperties       = new HashMap<>();
+        private final Map<String, String> hibernateProperties = new HashMap<>();
+        private final Map<String, String> poolProperties      = new HashMap<>();
+        private       boolean             pool                = false;
 
 
         private Builder() {
-        }
-
-        public Map<String, String> getPoolProperties() {
-            return poolProperties;
-        }
-
-        public Builder setHbm2ddl(String hbm2ddl) {
-            this.hbm2ddl = hbm2ddl;
-            return this;
-        }
-
-        private final Map<String, String> hibernateProperties = new HashMap<>();
-        //Pool
-
-        public Map<String, String> getHibernateProperties() {
-            return hibernateProperties;
-        }
-
-        public Builder addPoolProperty(String property, String value) {
-            this.poolProperties.put(property, value);
-            return this;
         }
 
         public Builder addHibernateProperty(String property, String value) {
@@ -250,6 +225,15 @@ public class MySQLConnection implements IConnection<Session> {
             return this;
         }
 
+        public String getHbm2ddl() {
+            return hbm2ddl;
+        }
+
+        public Builder setHbm2ddl(String hbm2ddl) {
+            this.hbm2ddl = hbm2ddl;
+            return this;
+        }
+
         public Map<String, String> getUrlProperties() {
             return urlProperties;
         }
@@ -259,9 +243,6 @@ public class MySQLConnection implements IConnection<Session> {
             return this;
         }
 
-
-        //POOL
-
         public boolean isPool() {
             return pool;
         }
@@ -269,6 +250,19 @@ public class MySQLConnection implements IConnection<Session> {
         public Builder setPool(boolean pool) {
             this.pool = pool;
             return this;
+        }
+
+        public Map<String, String> getPoolProperties() {
+            return poolProperties;
+        }
+
+        public Builder addPoolProperty(String property, String value) {
+            this.poolProperties.put(property, value);
+            return this;
+        }
+
+        public Map<String, String> getHibernateProperties() {
+            return hibernateProperties;
         }
 
         /**
