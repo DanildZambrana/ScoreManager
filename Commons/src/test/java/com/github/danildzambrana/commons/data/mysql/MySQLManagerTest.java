@@ -3,9 +3,9 @@ package com.github.danildzambrana.commons.data.mysql;
 import org.junit.jupiter.api.Test;
 
 class MySQLManagerTest {
-    private MySQLManager<Long, TestEntity> manager;
-    private boolean execute = true;
-    private TestEntity test = new TestEntity("Juan", "Lopez", "15");
+    private final MySQLManager<Long, TestEntity> manager;
+    private final TestEntity                     test    = new TestEntity("Juan", "Lopez", "15");
+    private       boolean                        execute = true;
 
     public MySQLManagerTest() {
         manager =
@@ -29,7 +29,7 @@ class MySQLManagerTest {
         if (manager.getConnection().isConnected()) {
             System.out.println("La conexion fue establecida");
         } else {
-            execute =false;
+            execute = false;
             System.out.println("la conexion no se pudo establecer");
         }
     }

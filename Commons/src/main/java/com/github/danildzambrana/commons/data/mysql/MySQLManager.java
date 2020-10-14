@@ -10,18 +10,20 @@ import java.util.Optional;
 
 /**
  * Mysql Adapter of {@link IDataManager}
+ *
  * @param <I> Type of ID.
  * @param <T> Type of object to save.
  */
 public class MySQLManager<I extends Serializable, T extends Serializable> implements IDataManager<I, T> {
     protected IConnection<Session> connection;
 
+    /**
+     * Construct instance of manager. See {@link MySQLConnection}
+     *
+     * @param connection the connection to this manager.
+     */
     public MySQLManager(IConnection<Session> connection) {
         this.connection = connection;
-    }
-
-    public IConnection<Session> getConnection() {
-        return connection;
     }
 
     @Override

@@ -19,26 +19,25 @@ import java.util.Map;
  * MySQL Adapter of {@link IConnection}
  */
 public class MySQLConnection implements IConnection<Session> {
-    private final String         URL;
     private final SessionFactory sessionFactory;
 
     /**
-     * Use {@link MySQLConnectionBuilder} instead.
+     * Use {@link Builder} instead.
      */
     private MySQLConnection() {
-        URL = null;
         throw new RuntimeException(new IllegalAccessException("This constructor cannot be used. Please use "
-                + MySQLConnectionBuilder.class.getName()));
+                + Builder.class.getName()));
     }
 
-    private MySQLConnection(MySQLConnectionBuilder builder) {
+    private MySQLConnection(Builder builder) {
         Configuration configuration = new Configuration();
 
         FieldUtils.requireArgument(!builder.getDriver().isEmpty());
         configuration.setProperty("hibernate.connector.driver_class", builder.getDriver());
 
-        URL = buildURL(builder.getHost(), builder.getPort(), builder.getDataBaseName(), builder.getUrlProperties());
-        configuration.setProperty("hibernate.connection.url", URL);
+        String url = buildURL(builder.getHost(), builder.getPort(), builder.getDataBaseName(),
+                builder.getUrlProperties());
+        configuration.setProperty("hibernate.connection.url", url);
 
         configuration.setProperty("hibernate.connection.username", builder.getUser());
         configuration.setProperty("hibernate.connection.password", builder.getPassword());
@@ -112,18 +111,18 @@ public class MySQLConnection implements IConnection<Session> {
     }
 
     @NotNull
-    public static MySQLConnectionBuilder builder() {
-        return new MySQLConnectionBuilder();
+    public static MySQLConnection.Builder builder() {
+        return new Builder();
     }
 
     /**
      * Builder adapter to {@link MySQLConnection}
      */
-    public static class MySQLConnectionBuilder {
+    public static class Builder {
         private String user;
         private String password;
         private String host;
-        private int    port;
+        private int    port = 3306;
         private String dataBaseName;
 
         private String  driver  = "com.mysql.jdbc.Driver";
@@ -137,9 +136,7 @@ public class MySQLConnection implements IConnection<Session> {
             return hbm2ddl;
         }
 
-        public MySQLConnectionBuilder setHbm2ddl(String hbm2ddl) {
-            this.hbm2ddl = hbm2ddl;
-            return this;
+        private Builder() {
         }
 
         private final Map<String, String> poolProperties = new HashMap<>();
@@ -149,8 +146,8 @@ public class MySQLConnection implements IConnection<Session> {
             return poolProperties;
         }
 
-        public MySQLConnectionBuilder addPoolProperty(String property, String value) {
-            this.poolProperties.put(property, value);
+        public Builder setHbm2ddl(String hbm2ddl) {
+            this.hbm2ddl = hbm2ddl;
             return this;
         }
 
@@ -162,12 +159,14 @@ public class MySQLConnection implements IConnection<Session> {
             return hibernateProperties;
         }
 
-        public MySQLConnectionBuilder addHibernateProperty(String property, String value) {
-            this.hibernateProperties.put(property, value);
+        public Builder addPoolProperty(String property, String value) {
+            this.poolProperties.put(property, value);
             return this;
         }
 
-        private MySQLConnectionBuilder() {
+        public Builder addHibernateProperty(String property, String value) {
+            this.hibernateProperties.put(property, value);
+            return this;
         }
 
 
@@ -175,7 +174,7 @@ public class MySQLConnection implements IConnection<Session> {
             return user;
         }
 
-        public MySQLConnectionBuilder setUser(String user) {
+        public Builder setUser(String user) {
             this.user = user;
             return this;
         }
@@ -184,7 +183,7 @@ public class MySQLConnection implements IConnection<Session> {
             return password;
         }
 
-        public MySQLConnectionBuilder setPassword(String password) {
+        public Builder setPassword(String password) {
             this.password = password;
             return this;
         }
@@ -193,7 +192,7 @@ public class MySQLConnection implements IConnection<Session> {
             return host;
         }
 
-        public MySQLConnectionBuilder setHost(String host) {
+        public Builder setHost(String host) {
             this.host = host;
             return this;
         }
@@ -202,7 +201,7 @@ public class MySQLConnection implements IConnection<Session> {
             return port;
         }
 
-        public MySQLConnectionBuilder setPort(int port) {
+        public Builder setPort(int port) {
             this.port = port;
             return this;
         }
@@ -211,7 +210,7 @@ public class MySQLConnection implements IConnection<Session> {
             return dataBaseName;
         }
 
-        public MySQLConnectionBuilder setDataBaseName(String dataBaseName) {
+        public Builder setDataBaseName(String dataBaseName) {
             this.dataBaseName = dataBaseName;
             return this;
         }
@@ -220,7 +219,7 @@ public class MySQLConnection implements IConnection<Session> {
             return driver;
         }
 
-        public MySQLConnectionBuilder setDriver(String driver) {
+        public Builder setDriver(String driver) {
             this.driver = driver;
             return this;
         }
@@ -229,7 +228,7 @@ public class MySQLConnection implements IConnection<Session> {
             return dialect;
         }
 
-        public MySQLConnectionBuilder setDialect(String dialect) {
+        public Builder setDialect(String dialect) {
             this.dialect = dialect;
             return this;
         }
@@ -238,7 +237,7 @@ public class MySQLConnection implements IConnection<Session> {
             return debug;
         }
 
-        public MySQLConnectionBuilder setDebug(boolean debug) {
+        public Builder setDebug(boolean debug) {
             this.debug = debug;
             return this;
         }
@@ -247,7 +246,7 @@ public class MySQLConnection implements IConnection<Session> {
             return mappedClazz;
         }
 
-        public MySQLConnectionBuilder setMappedClazz(Class<?>... mappedClazz) {
+        public Builder setMappedClazz(Class<?>... mappedClazz) {
             this.mappedClazz = mappedClazz;
             return this;
         }
@@ -256,7 +255,7 @@ public class MySQLConnection implements IConnection<Session> {
             return urlProperties;
         }
 
-        public MySQLConnectionBuilder addURLProperty(String property, String value) {
+        public Builder addURLProperty(String property, String value) {
             this.urlProperties.put(property, value);
             return this;
         }
@@ -268,7 +267,7 @@ public class MySQLConnection implements IConnection<Session> {
             return pool;
         }
 
-        public MySQLConnectionBuilder setPool(boolean pool) {
+        public Builder setPool(boolean pool) {
             this.pool = pool;
             return this;
         }
