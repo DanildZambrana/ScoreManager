@@ -36,26 +36,20 @@ class MySQLManagerTest {
 
     @Test
     void save() {
-        if (!execute) {
-            return;
-        }
+        assert execute;
         manager.save(test);
     }
 
     @Test
     void get() {
-        if (!execute) {
-            return;
-        }
+        assert execute;
 
         System.out.println(manager.get(1L, TestEntity.class).toString());
     }
 
     @Test
     void delete() {
-        if (!execute) {
-            return;
-        }
+        assert execute;
         manager.get(1L, TestEntity.class).ifPresent(manager::delete);
     }
 }

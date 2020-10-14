@@ -18,9 +18,9 @@ public class MongoConnection implements IConnection<Datastore> {
     private final Datastore   datastore;
     private final String      database;
 
-    private MongoConnection() {
-        throw new RuntimeException(new IllegalAccessException("This constructor cannot be used. Please use "
-                + Builder.class.getName()));
+    private MongoConnection() throws Exception {
+        throw new IllegalAccessException("This constructor cannot be used. Please use "
+                + Builder.class.getName());
     }
 
     public MongoConnection(Builder builder) {

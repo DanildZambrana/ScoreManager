@@ -24,9 +24,9 @@ public class MySQLConnection implements IConnection<Session> {
     /**
      * Use {@link Builder} instead.
      */
-    private MySQLConnection() {
-        throw new RuntimeException(new IllegalAccessException("This constructor cannot be used. Please use "
-                + Builder.class.getName()));
+    private MySQLConnection() throws Exception {
+        throw new IllegalAccessException("This constructor cannot be used. Please use "
+                + Builder.class.getName());
     }
 
     private MySQLConnection(Builder builder) {
@@ -119,28 +119,28 @@ public class MySQLConnection implements IConnection<Session> {
      * Builder adapter to {@link MySQLConnection}
      */
     public static class Builder {
-        private String user;
-        private String password;
-        private String host;
-        private int    port = 3306;
-        private String dataBaseName;
-
-        private String  driver  = "com.mysql.jdbc.Driver";
-        private String  dialect = "org.hibernate.dialect.MySQL8Dialect";
-        private boolean debug   = false;
-
-        private Class<?>[]  mappedClazz;
-        private String hbm2ddl = "update";
+        private String     user;
+        private String     password;
+        private String     host;
+        private int        port    = 3306;
+        private String     dataBaseName;
+        private String     driver  = "com.mysql.jdbc.Driver";
+        private String     dialect = "org.hibernate.dialect.MySQL8Dialect";
+        private boolean    debug   = false;
+        private Class<?>[] mappedClazz;
+        private String     hbm2ddl = "update";
 
         public String getHbm2ddl() {
             return hbm2ddl;
         }
 
-        private Builder() {
-        }
-
         private final Map<String, String> poolProperties = new HashMap<>();
         private final Map<String, String> urlProperties  = new HashMap<>();
+        private       boolean             pool           = false;
+
+
+        private Builder() {
+        }
 
         public Map<String, String> getPoolProperties() {
             return poolProperties;
@@ -153,7 +153,6 @@ public class MySQLConnection implements IConnection<Session> {
 
         private final Map<String, String> hibernateProperties = new HashMap<>();
         //Pool
-        private       boolean             pool                = false;
 
         public Map<String, String> getHibernateProperties() {
             return hibernateProperties;
